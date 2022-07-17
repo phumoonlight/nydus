@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { VurlModule } from '@/apps/vurl/vurl.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { VurlModule } from './apps/vurl/vurl.module';
 
 @Module({
   imports: [VurlModule],
