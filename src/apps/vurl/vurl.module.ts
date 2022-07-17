@@ -2,7 +2,14 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ENV } from '@/app.env';
 import { VurlController } from './vurl.controller';
-import { Link, LinkGroup, LinkGroupSchema, LinkSchema } from './vurl.schema';
+import {
+  Link,
+  LinkGroup,
+  LinkGroupSchema,
+  LinkSchema,
+  UploadedImage,
+  UploadedImageSchema,
+} from './vurl.schema';
 import { vurlConfig } from './vurl.config';
 import { VurlService } from './vurl.service';
 
@@ -12,6 +19,7 @@ import { VurlService } from './vurl.service';
     MongooseModule.forFeature([
       { name: Link.name, schema: LinkSchema },
       { name: LinkGroup.name, schema: LinkGroupSchema },
+      { name: UploadedImage.name, schema: UploadedImageSchema },
     ]),
   ],
   controllers: [VurlController],

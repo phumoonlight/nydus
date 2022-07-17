@@ -1,12 +1,25 @@
-import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Patch,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Model } from 'mongoose';
-import { vurlFirebase } from './vurl.firebase';
+import { uploadImage, vurlFirebase } from './vurl.firebase';
 import {
   Link,
   LinkDocument,
   LinkGroup,
   LinkGroupDocument,
+  UploadedImage,
+  UploadedImageDocument,
 } from './vurl.schema';
 import { VurlService } from './vurl.service';
 
@@ -17,6 +30,8 @@ export class VurlController {
     private linkModel: Model<LinkDocument>,
     @InjectModel(LinkGroup.name)
     private linkGroupModel: Model<LinkGroupDocument>,
+    @InjectModel(UploadedImage.name)
+    private imageModel: Model<UploadedImageDocument>,
     private vurlService: VurlService
   ) {}
 
@@ -57,5 +72,27 @@ export class VurlController {
   async createLinkGroup(group: LinkGroupDocument) {
     const newGroup = new this.linkGroupModel(group);
     return await newGroup.save();
+  }
+
+  @Post('images')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+    const url = await uploadImage(file);
+    if (!url) {
+      throw new HttpException(
+        'Upload failed',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+    this.imageModel.create({
+      uid: '',
+      url: url,
+    });
+    return {
+      message: 'success',
+      code: 'success',
+      uploadedUrl: url,
+    };
   }
 }

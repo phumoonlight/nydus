@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 
 @Schema({
   timestamps: true,
+  collection: 'link_items',
 })
 export class Link {
   @Prop({ index: true })
@@ -29,6 +30,7 @@ export const LinkSchema = SchemaFactory.createForClass(Link);
 
 @Schema({
   timestamps: true,
+  collection: 'link_groups',
 })
 export class LinkGroup {
   @Prop({ index: true })
@@ -49,3 +51,18 @@ export class LinkGroup {
 
 export type LinkGroupDocument = LinkGroup & Document;
 export const LinkGroupSchema = SchemaFactory.createForClass(LinkGroup);
+
+@Schema({
+  timestamps: true,
+  collection: 'images',
+})
+export class UploadedImage {
+  @Prop({ index: true })
+  uid: string;
+
+  @Prop()
+  url: string;
+}
+
+export type UploadedImageDocument = UploadedImage & Document;
+export const UploadedImageSchema = SchemaFactory.createForClass(UploadedImage);
