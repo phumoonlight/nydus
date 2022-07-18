@@ -6,22 +6,22 @@ import { Document } from 'mongoose';
   collection: 'link_items',
 })
 export class Link {
-  @Prop({ index: true })
+  @Prop({ index: true, required: true })
   uid: string;
 
-  @Prop({ index: true })
+  @Prop({ index: true, default: '', ref: 'link_groups' })
   gid: string;
 
-  @Prop({ index: true })
+  @Prop({ index: true, required: true })
   name: string;
 
-  @Prop()
+  @Prop({ default: '' })
   timg: string;
 
-  @Prop()
+  @Prop({ default: '' })
   url: string;
 
-  @Prop()
+  @Prop({ default: 0 })
   order: number;
 }
 
@@ -33,20 +33,23 @@ export const LinkSchema = SchemaFactory.createForClass(Link);
   collection: 'link_groups',
 })
 export class LinkGroup {
-  @Prop({ index: true })
+  @Prop({ index: true, required: true })
   uid: string;
 
-  @Prop({ index: true })
+  @Prop({ index: true, required: true })
   name: string;
 
-  @Prop()
+  @Prop({ default: '' })
   desc: string;
 
-  @Prop()
+  @Prop({ default: '' })
   timg: string;
 
-  @Prop()
+  @Prop({ default: 0 })
   order: number;
+
+  @Prop({ default: false })
+  ispub: boolean;
 }
 
 export type LinkGroupDocument = LinkGroup & Document;
@@ -57,10 +60,10 @@ export const LinkGroupSchema = SchemaFactory.createForClass(LinkGroup);
   collection: 'images',
 })
 export class UploadedImage {
-  @Prop({ index: true })
+  @Prop({ index: true, default: '' })
   uid: string;
 
-  @Prop()
+  @Prop({ default: '' })
   url: string;
 }
 
