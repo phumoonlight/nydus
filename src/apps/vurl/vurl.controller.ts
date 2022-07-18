@@ -13,15 +13,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Model } from 'mongoose';
 import { uploadImage, vurlFirebase } from './vurl.firebase';
-import {
-  Link,
-  LinkDocument,
-  LinkGroup,
-  LinkGroupDocument,
-  UploadedImage,
-  UploadedImageDocument,
-} from './vurl.schema';
 import { VurlService } from './vurl.service';
+import { Link, LinkDocument } from './schemas/link.schema';
+import { LinkGroup, LinkGroupDocument } from './schemas/linkgroup.schema';
+import { UploadedImage, UploadedImageDocument } from './schemas/image.schema';
 
 @Controller('api/vurl')
 export class VurlController {
