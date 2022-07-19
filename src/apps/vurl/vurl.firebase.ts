@@ -36,7 +36,7 @@ export const initFirebaseStorageUploader = ({
     return new Promise<string>((resolve) => {
       if (!file) return resolve('');
       const bucketName = bucket.name;
-      const randomizedNumber = Math.round(Math.random() * 100000);
+      const randomizedNumber = Math.round(Math.random() * 900000) + 100000;
       const generated = `${Date.now()}-${randomizedNumber}`;
       const splitedFileName = file.originalname.split('.');
       const fileExtension = splitedFileName[splitedFileName.length - 1];
