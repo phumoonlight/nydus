@@ -12,7 +12,6 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Model } from 'mongoose';
-import { vurlFirebase } from './vurl.firebase';
 import { VurlService } from './vurl.service';
 import { Link, LinkDocument } from './schemas/link.schema';
 import { LinkGroup, LinkGroupDocument } from './schemas/linkgroup.schema';
@@ -33,7 +32,6 @@ export class VurlController {
   async getLinks() {
     const value = await this.vurlService.getLinks();
     return {
-      name: vurlFirebase.bucket.name,
       value,
     };
   }
@@ -71,17 +69,17 @@ export class VurlController {
   @Post('images')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const uploadedUrl = await this.imageService.upload('', file);
-    if (!uploadedUrl) {
+    const resultUrl = await this.imageService.upload(file, '');
+    if (!resultUrl) {
       throw new HttpException(
-        'Upload failed',
+        'failed to upload image',
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
     return {
       message: 'success',
       code: 'success',
-      uploadedUrl: uploadedUrl,
+      uploadedUrl: resultUrl,
     };
   }
 }

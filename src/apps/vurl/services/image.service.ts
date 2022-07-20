@@ -1,32 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { FirebaseService } from './firebase.service';
 import { UploadedImage, UploadedImageDocument } from '../schemas/image.schema';
-import { initFirebaseStorageUploader, vurlFirebase } from '../vurl.firebase';
 
 @Injectable()
 export class ImageService {
   constructor(
+    private firebaseService: FirebaseService,
     @InjectModel(UploadedImage.name)
     private imageModel: Model<UploadedImageDocument>
   ) {}
 
-  async upload(userId: string, file: Express.Multer.File): Promise<string> {
-    const folder = userId
+  async upload(file: Express.Multer.File, userId: string): Promise<string> {
+    const dirname = userId
       ? `useruploadedimages/${userId}`
       : 'nonowneruploadedimages';
-    const uploadImageFile = initFirebaseStorageUploader({
-      bucket: vurlFirebase.bucket,
-      folder: folder,
-      fileNamePrefix: 'v',
-    });
-    const uploadedUrl = await uploadImageFile(file);
-    if (uploadedUrl) {
+    const resultUrl = await this.firebaseService.uploadImageFile(file, dirname);
+    if (resultUrl) {
       await this.imageModel.create({
         uid: userId,
-        url: uploadedUrl,
+        url: resultUrl,
       });
     }
-    return uploadedUrl;
+    return resultUrl;
   }
 }

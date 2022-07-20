@@ -8,6 +8,7 @@ import { ImageService } from './services/image.service';
 import { LinkModelDefinition } from './schemas/link.schema';
 import { LinkGroupModelDefinition } from './schemas/linkgroup.schema';
 import { UploadedImageModelDefinition } from './schemas/image.schema';
+import { FirebaseService } from './services/firebase.service';
 
 @Module({
   imports: [
@@ -19,6 +20,6 @@ import { UploadedImageModelDefinition } from './schemas/image.schema';
     ]),
   ],
   controllers: [VurlController],
-  providers: [VurlService, ImageService],
+  providers: [VurlService, FirebaseService, ImageService],
 })
 export class VurlModule {}
