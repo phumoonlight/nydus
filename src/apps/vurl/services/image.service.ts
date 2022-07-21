@@ -13,9 +13,7 @@ export class ImageService {
   ) {}
 
   async upload(file: Express.Multer.File, userId: string): Promise<string> {
-    const dirname = userId
-      ? `useruploadedimages/${userId}`
-      : 'nonowneruploadedimages';
+    const dirname = userId ? `uploadimgs/owned/${userId}` : `uploadimgs/shared`;
     const resultUrl = await this.firebaseService.uploadImageFile(file, dirname);
     if (resultUrl) {
       await this.imageModel.create({

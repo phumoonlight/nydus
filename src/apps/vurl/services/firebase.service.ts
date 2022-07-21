@@ -21,7 +21,7 @@ export const firebaseBucket = firebaseStorage.bucket();
 @Injectable()
 export class FirebaseService {
   private IMAGE_FILENAME_PREFIX = 'v';
-  private DEFAULT_DIRNAME = 'uploadedimages';
+  private DEFAULT_DIRNAME = 'uploadimgs/shared';
 
   uploadImageFile(
     file: Express.Multer.File,
@@ -44,7 +44,8 @@ export class FirebaseService {
         resolve('');
       });
       blobStream.on('finish', () => {
-        const url = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${dirname}%2F${newFileName}?alt=media`;
+        const encodedDirname = encodeURIComponent(dirname);
+        const url = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodedDirname}%2F${newFileName}?alt=media`;
         resolve(url);
       });
       blobStream.end(file.buffer);

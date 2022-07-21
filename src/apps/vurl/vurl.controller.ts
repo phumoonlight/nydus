@@ -2,8 +2,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Patch,
   Post,
   UploadedFile,
@@ -16,6 +14,8 @@ import { VurlService } from './vurl.service';
 import { Link, LinkDocument } from './schemas/link.schema';
 import { LinkGroup, LinkGroupDocument } from './schemas/linkgroup.schema';
 import { ImageService } from './services/image.service';
+import { ERR_UPLOAD_IMAGE } from './vurl.error';
+import { Authorization } from './vurl.auth';
 
 @Controller('api/vurl')
 export class VurlController {
@@ -68,18 +68,26 @@ export class VurlController {
 
   @Post('images')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const resultUrl = await this.imageService.upload(file, '');
-    if (!resultUrl) {
-      throw new HttpException(
-        'failed to upload image',
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
-    }
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Authorization() userId: string
+  ) {
+    const resultUrl = await this.imageService.upload(file, userId);
+    if (!resultUrl) throw ERR_UPLOAD_IMAGE;
     return {
       message: 'success',
-      code: 'success',
-      uploadedUrl: resultUrl,
+      url: resultUrl,
+    };
+  }
+
+  @Post('sharedimages')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadSharedImage(@UploadedFile() file: Express.Multer.File) {
+    const resultUrl = await this.imageService.upload(file, '');
+    if (!resultUrl) throw ERR_UPLOAD_IMAGE;
+    return {
+      message: 'success',
+      url: resultUrl,
     };
   }
 }
