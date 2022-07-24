@@ -1,17 +1,38 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { ERR_UNAUTHORIZED } from './vurl.error';
+import {
+  applyDecorators,
+  createParamDecorator,
+  SetMetadata,
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import { verifyIdToken } from './core/firebase/firebase.service';
+
+const ErrUnauthorized = new HttpException(
+  'unauthorized',
+  HttpStatus.UNAUTHORIZED
+);
 
 export const Authorization = createParamDecorator(
-  (_, ctx: ExecutionContext) => {
+  async (_, ctx: ExecutionContext) => {
     const req = ctx.switchToHttp().getRequest();
-    if (!req.headers.authorization) throw ERR_UNAUTHORIZED;
-    // const { authorization: accessToken } = request.headers;
-    // try {
-    //   const decoded = jwt.verify(accessToken, process.env.JWT_HASH);
-    //   return pick(decoded, 'userId');
-    // } catch (ex) {
-    //   throw new InvalidToken();
-    // }
-    return req.headers.authorization;
+    const token = req.headers.authorization;
+    if (!token) throw ErrUnauthorized;
+    const decodedIdToken = await verifyIdToken(token);
+    if (!decodedIdToken) throw ErrUnauthorized;
+    return decodedIdToken.uid;
   }
 );
+
+const AAA = createParamDecorator((_, ctx: ExecutionContext) => {
+  console.log('wow');
+  const req = ctx.switchToHttp().getRequest();
+  const token = req.headers.authorization;
+  if (!token) throw ErrUnauthorized;
+  if (token !== 'admin') throw ErrUnauthorized;
+});
+
+export const AdminAuthorization = () => {
+  console.log('first');
+  return applyDecorators(SetMetadata('aaaa', true), AAA);
+};

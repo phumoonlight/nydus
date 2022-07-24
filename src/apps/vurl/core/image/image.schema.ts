@@ -14,7 +14,7 @@ export class UploadedImage {
   url: string;
 
   @Prop({ default: '' })
-  path: string;
+  fname: string;
 }
 
 export type UploadedImageDocument = UploadedImage & Document;

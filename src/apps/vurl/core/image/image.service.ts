@@ -14,44 +14,54 @@ export class ImageService {
     private imageModel: Model<UploadedImageDocument>
   ) {}
 
+  async findAll(): Promise<UploadedImageDocument[]> {
+    return await this.imageModel.find();
+  }
+
   async getList(userId: string): Promise<UploadedImageDocument[]> {
     return await this.imageModel.find({ uid: userId });
   }
 
+  async findById(id: string): Promise<UploadedImageDocument> {
+    return await this.imageModel.findById(id);
+  }
+
   async upload(file: Express.Multer.File, userId: string): Promise<string> {
-    const newFilePath = this.generatePath(userId, file);
-    const resultUrl = await this.firebaseService.uploadImageFile(
-      file,
-      newFilePath
-    );
+    const { filename, path } = this.processFile(userId, file);
+    const resultUrl = await this.firebaseService.uploadImageFile(file, path);
     if (resultUrl) {
       await this.imageModel.create({
         uid: userId,
         url: resultUrl,
-        path: newFilePath,
+        fname: filename,
       });
     }
     return resultUrl;
   }
 
-  async delete(id: string) {
-    const img = await this.imageModel.findById(id);
-    if (!img) return;
-    const path = img.path;
-    const cc = await this.firebaseService.deleteImageFile(path);
-    console.log(path, cc);
-    const result = img.remove();
+  async delete(imageId: string, userId: string) {
+    const img = await this.imageModel.findById(imageId);
+    if (!img) return null;
+    const filename = img.fname;
+    const path = userId
+      ? `uploadimgs/owned/${userId}/${filename}`
+      : `uploadimgs/shared/${filename}`;
+    await this.firebaseService.deleteImageFile(path);
+    const result = await img.remove();
     return result;
   }
 
-  generatePath(userId: string, file: Express.Multer.File): string {
+  processFile(userId: string, file: Express.Multer.File) {
     const dirname = userId ? `uploadimgs/owned/${userId}` : `uploadimgs/shared`;
     const randomizedNumber = Math.round(Math.random() * 900000) + 100000;
-    const newFilename = `${Date.now()}-${randomizedNumber}`;
+    const randomizedFilename = `${Date.now()}-${randomizedNumber}`;
     const splitedFileName = file.originalname.split('.');
     const fileExtension = splitedFileName[splitedFileName.length - 1];
-    const newFileName = `${this.IMAGE_FILENAME_PREFIX}-${newFilename}.${fileExtension}`;
-    const newFilePath = `${dirname}/${newFileName}`;
-    return newFilePath;
+    const newFilename = `${this.IMAGE_FILENAME_PREFIX}-${randomizedFilename}.${fileExtension}`;
+    const newFilePath = `${dirname}/${newFilename}`;
+    return {
+      filename: newFilename,
+      path: newFilePath,
+    };
   }
 }

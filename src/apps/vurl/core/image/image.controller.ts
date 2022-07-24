@@ -18,6 +18,11 @@ const ErrUploadImageFailed = new HttpException(
   HttpStatus.INTERNAL_SERVER_ERROR
 );
 
+const ErrDeleteImageNotFound = new HttpException(
+  'image_not_found',
+  HttpStatus.UNPROCESSABLE_ENTITY
+);
+
 @Controller()
 export class ImageController {
   constructor(private imageService: ImageService) {}
@@ -62,8 +67,9 @@ export class ImageController {
   }
 
   @Delete(':id')
-  async delete(@Authorization() _: string, @Param('id') id: string) {
-    const result = await this.imageService.delete(id);
+  async delete(@Authorization() userId: string, @Param('id') imageId: string) {
+    const result = await this.imageService.delete(imageId, userId);
+    if (!result) throw ErrDeleteImageNotFound;
     return {
       message: 'success',
       result,
