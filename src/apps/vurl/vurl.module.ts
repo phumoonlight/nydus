@@ -1,25 +1,27 @@
 import { Module } from '@nestjs/common';
+import { RouterModule } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ENV } from '@/app.env';
-import { VurlController } from './vurl.controller';
+import { routes } from './vurl.routes';
 import { vurlConfig } from './vurl.config';
-import { VurlService } from './vurl.service';
-import { ImageService } from './services/image.service';
-import { LinkModelDefinition } from './schemas/link.schema';
-import { LinkGroupModelDefinition } from './schemas/linkgroup.schema';
-import { UploadedImageModelDefinition } from './schemas/image.schema';
-import { FirebaseService } from './services/firebase.service';
+import { FirebaseModule } from './core/firebase/firebase.module';
+import { ImageModule } from './core/image/image.module';
+import { LinkModule } from './core/link/link.module';
+import { LinkGroupModule } from './core/linkgroup/linkgroup.module';
+import { AdminModule } from './core/admin/admin.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(ENV.vurlMongoConn, vurlConfig.mongooseOptions),
-    MongooseModule.forFeature([
-      LinkModelDefinition,
-      LinkGroupModelDefinition,
-      UploadedImageModelDefinition,
-    ]),
+    RouterModule.register(routes),
+    FirebaseModule,
+    ImageModule,
+    LinkModule,
+    LinkGroupModule,
+    AdminModule,
   ],
-  controllers: [VurlController],
-  providers: [VurlService, FirebaseService, ImageService],
+  controllers: [],
+  providers: [],
+  exports: [],
 })
 export class VurlModule {}
