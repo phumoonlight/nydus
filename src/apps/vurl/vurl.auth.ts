@@ -32,7 +32,4 @@ const AAA = createParamDecorator((_, ctx: ExecutionContext) => {
   if (token !== 'admin') throw ErrUnauthorized;
 });
 
-export const AdminAuthorization = () => {
-  console.log('first');
-  return applyDecorators(SetMetadata('aaaa', true), AAA);
-};
+export const AdminAuthorization = () => SetMetadata('adminx', 'xxxx');

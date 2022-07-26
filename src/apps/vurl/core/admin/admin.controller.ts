@@ -1,13 +1,36 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { HTTP_UNAUTHORIZED } from '@/common/error';
 import { ImageService } from '../image/image.service';
-import { AdminAuthorization } from '@/apps/vurl/vurl.auth';
+import { AdminGuard } from './admin.guard';
+import { ENV } from '@/app.env';
+import { generateToken } from '@/common/jwt';
+
+@Controller()
+export class AdminController {
+  @Post('login')
+  async deleteImage(@Body('key') key: string) {
+    if (key !== ENV.vurlAdminAuthKey) throw HTTP_UNAUTHORIZED;
+    const token = generateToken({ key });
+    return {
+      token,
+    };
+  }
+}
 
 @Controller('images')
+@UseGuards(AdminGuard)
 export class AdminImageController {
   constructor(private imageService: ImageService) {}
 
   @Get()
-  @AdminAuthorization()
   async getList() {
     const imgList = await this.imageService.findAll();
     return {
@@ -16,7 +39,6 @@ export class AdminImageController {
   }
 
   @Delete(':id')
-  @AdminAuthorization()
   async delete(@Param('id') id: string) {
     const img = await this.imageService.findById(id);
     if (!img) {
