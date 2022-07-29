@@ -1,7 +1,7 @@
-export interface LinkDto {
+export interface LinkReqBody {
   gid: string;
   name: string;
   timg: string;
   url: string;
-  order: number;
+  posn: number;
 }

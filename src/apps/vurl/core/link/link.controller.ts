@@ -10,26 +10,30 @@ import {
 import { LinkService } from './link.service';
 import { Authorization } from '../../vurl.auth';
 import { Link } from './link.schema';
-import { LinkDto } from './link.dto';
+import { LinkReqBody } from './link.type';
+import { OwnershipService } from '../../common/ownership/ownership.service';
 
 @Controller()
 export class LinkController {
-  constructor(private linkService: LinkService) {}
+  constructor(
+    private linkService: LinkService,
+    private ownershipService: OwnershipService
+  ) {}
 
   @Get()
   async getList(@Authorization() userId: string) {
-    const value = await this.linkService.getList(userId);
+    const ownership = this.ownershipService.create(userId, '');
+    const value = await this.linkService.getList(ownership);
     return {
       value,
     };
   }
 
   @Post()
-  async create(@Authorization() userId: string, @Body() payload: LinkDto) {
-    const result = await this.linkService.create(userId, payload);
+  async create(@Authorization() userId: string, @Body() body: LinkReqBody) {
+    const result = await this.linkService.create(userId, body);
     return {
-      message: 'success',
-      value: result,
+      result,
     };
   }
 
@@ -39,18 +43,19 @@ export class LinkController {
     @Param('id') id: string,
     @Body() payload: Link
   ) {
-    const result = await this.linkService.update(id, userId, payload);
+    const ownership = this.ownershipService.create(userId, id);
+    const result = await this.linkService.update(ownership, payload);
     return {
-      message: 'success',
-      value: result,
+      result,
     };
   }
 
   @Delete('links/:id')
   async deleteLink(@Authorization() userId: string, @Param('id') id: string) {
-    await this.linkService.delete(id, userId);
+    const ownership = this.ownershipService.create(userId, id);
+    const result = this.linkService.delete(ownership);
     return {
-      message: 'success',
+      result,
     };
   }
 }

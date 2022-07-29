@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { LinkDto } from './link.dto';
+import { Ownership } from '@/apps/vurl/common/ownership/ownership.type';
+import { LinkReqBody } from './link.type';
 import { Link, LinkDocument } from './link.schema';
 
 @Injectable()
@@ -11,28 +12,45 @@ export class LinkService {
     private linkModel: Model<LinkDocument>
   ) {}
 
-  async getList(uid: string) {
-    const links = await this.linkModel.find({ uid });
+  async getList(ownership: Ownership) {
+    const links = await this.linkModel.find({ uid: ownership.userId });
     return links;
   }
 
-  async create(uid: string, dto: LinkDto) {
+  async create(uid: string, payload: LinkReqBody) {
     const result = await this.linkModel.create({
       uid: uid,
-      gid: dto.gid,
-      name: dto.name,
-      url: dto.url,
-      timg: dto.timg,
-      order: dto.order,
+      gid: payload.gid,
+      name: payload.name,
+      url: payload.url,
+      timg: payload.timg,
+      posn: payload.posn,
     });
     return result;
   }
 
-  async update(id: string, uid: string, dto: any) {
-    return '';
+  async update(ownership: Ownership, payload: LinkReqBody) {
+    const result = await this.linkModel.updateOne(
+      {
+        _id: ownership.itemId,
+        uid: ownership.userId,
+      },
+      {
+        gid: payload.gid,
+        name: payload.name,
+        url: payload.url,
+        timg: payload.timg,
+        posn: payload.posn,
+      }
+    );
+    return result;
   }
 
-  async delete(id: string, uid: string) {
-    return '';
+  async delete(ownership: Ownership) {
+    const result = await this.linkModel.deleteOne({
+      _id: ownership.itemId,
+      uid: ownership.userId,
+    });
+    return result;
   }
 }

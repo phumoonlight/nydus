@@ -23,7 +23,7 @@ export class Link {
   url: string;
 
   @Prop({ default: 0 })
-  order: number;
+  posn: number;
 }
 
 export type LinkDocument = Link & Document;
