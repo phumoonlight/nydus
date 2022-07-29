@@ -9,7 +9,8 @@ import { ImageModule } from './core/image/image.module';
 import { LinkModule } from './core/link/link.module';
 import { LinkGroupModule } from './core/linkgroup/linkgroup.module';
 import { AdminModule } from './core/admin/admin.module';
-import { OwnershipService } from './common/ownership/ownership.service';
+import { UserModule } from './core/user/user.module';
+import { UserAdminModule } from './core/user/admin/user.admin.module';
 
 @Module({
   imports: [
@@ -20,9 +21,11 @@ import { OwnershipService } from './common/ownership/ownership.service';
     LinkModule,
     LinkGroupModule,
     AdminModule,
+    UserModule,
+    UserAdminModule,
   ],
   controllers: [],
-  providers: [OwnershipService],
+  providers: [],
   exports: [],
 })
 export class VurlModule {}
