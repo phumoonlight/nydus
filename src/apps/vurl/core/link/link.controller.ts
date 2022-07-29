@@ -11,19 +11,14 @@ import { LinkService } from './link.service';
 import { Authorization } from '../../vurl.auth';
 import { Link } from './link.schema';
 import { LinkReqBody } from './link.type';
-import { OwnershipService } from '../../common/ownership/ownership.service';
 
 @Controller()
 export class LinkController {
-  constructor(
-    private linkService: LinkService,
-    private ownershipService: OwnershipService
-  ) {}
+  constructor(private linkService: LinkService) {}
 
   @Get()
   async getList(@Authorization() userId: string) {
-    const ownership = this.ownershipService.create(userId, '');
-    const value = await this.linkService.getList(ownership);
+    const value = await this.linkService.getList(userId);
     return {
       value,
     };
@@ -43,8 +38,7 @@ export class LinkController {
     @Param('id') id: string,
     @Body() payload: Link
   ) {
-    const ownership = this.ownershipService.create(userId, id);
-    const result = await this.linkService.update(ownership, payload);
+    const result = await this.linkService.update(id, userId, payload);
     return {
       result,
     };
@@ -52,8 +46,7 @@ export class LinkController {
 
   @Delete('links/:id')
   async deleteLink(@Authorization() userId: string, @Param('id') id: string) {
-    const ownership = this.ownershipService.create(userId, id);
-    const result = this.linkService.delete(ownership);
+    const result = this.linkService.delete(id, userId);
     return {
       result,
     };
