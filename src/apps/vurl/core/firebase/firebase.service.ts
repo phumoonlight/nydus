@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { DecodedIdToken } from 'firebase-admin/auth';
 import { firebaseAuth, firebaseBucket } from './firebase.app';
 
 @Injectable()
@@ -27,6 +28,10 @@ export class FirebaseService {
     if (!path) return;
     const file = firebaseBucket.file(path);
     await file.delete();
+  }
+
+  async verifyIdToken(token: string): Promise<DecodedIdToken> {
+    return await verifyIdToken(token);
   }
 }
 

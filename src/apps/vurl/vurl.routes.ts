@@ -9,7 +9,7 @@ export const routes: Routes = [
   {
     path: 'api/vurl',
     children: [
-      { path: 'users', module: UserModule },
+      // { path: 'users', module: UserModule },
       { path: 'images', module: ImageModule },
       { path: 'links', module: LinkModule },
       { path: 'linkgroups', module: LinkGroupModule },
@@ -17,6 +17,8 @@ export const routes: Routes = [
   },
   {
     path: 'api/vurl/admin',
-    children: [{ path: 'users', module: UserAdminModule }],
+    children: [
+      // { path: 'users', module: UserAdminModule }
+    ],
   },
 ];

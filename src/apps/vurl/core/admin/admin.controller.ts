@@ -11,14 +11,14 @@ import { ERR_HTTP_UNAUTHORIZED } from '@/common/error';
 import { ImageService } from '../image/image.service';
 import { AdminGuard } from './admin.guard';
 import { ENV } from '@/app.env';
-import { generateToken } from '@/common/jwt';
+import { createToken } from '@/common/jwt';
 
 @Controller()
 export class AdminController {
   @Post('login')
   async login(@Body('key') key: string) {
     if (key !== ENV.vurlAdminAuthKey) throw ERR_HTTP_UNAUTHORIZED;
-    const token = generateToken({ key });
+    const token = createToken({ key });
     return {
       token,
     };
