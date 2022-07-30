@@ -33,6 +33,10 @@ export class FirebaseService {
   async verifyIdToken(token: string): Promise<DecodedIdToken> {
     return await verifyIdToken(token);
   }
+
+  async listUsers() {
+    return firebaseAuth.listUsers();
+  }
 }
 
 export const verifyIdToken = async (token: string) => {
