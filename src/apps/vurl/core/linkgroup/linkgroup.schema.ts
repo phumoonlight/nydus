@@ -20,10 +20,10 @@ export class LinkGroup {
   timg: string;
 
   @Prop({ default: 0 })
-  order: number;
+  posn: number;
 
   @Prop({ default: false })
-  ispub: boolean;
+  is_pub: boolean;
 }
 
 export type LinkGroupDocument = LinkGroup & Document;
