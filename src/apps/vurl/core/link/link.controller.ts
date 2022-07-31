@@ -32,7 +32,7 @@ export class LinkController {
     };
   }
 
-  @Patch('links/:id')
+  @Patch(':id')
   async updateLink(
     @Authorization() userId: string,
     @Param('id') id: string,
@@ -44,7 +44,7 @@ export class LinkController {
     };
   }
 
-  @Delete('links/:id')
+  @Delete(':id')
   async deleteLink(@Authorization() userId: string, @Param('id') id: string) {
     const result = this.linkService.delete(id, userId);
     return {
