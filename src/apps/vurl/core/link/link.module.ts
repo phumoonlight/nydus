@@ -8,5 +8,6 @@ import { LinkService } from './link.service';
   imports: [MongooseModule.forFeature([LinkModelDefinition])],
   controllers: [LinkController],
   providers: [LinkService],
+  exports: [LinkService],
 })
 export class LinkModule {}

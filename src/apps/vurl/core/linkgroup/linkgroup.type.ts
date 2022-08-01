@@ -3,5 +3,7 @@ export interface CreateLinkGroupDto {
   desc: string;
   timg: string;
   posn: number;
-  is_pub: boolean;
+  public: boolean;
 }
+
+export type UpdateLinkGroupDto = Partial<CreateLinkGroupDto>;

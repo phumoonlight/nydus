@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Authorization } from '../../vurl.auth';
 import { LinkGroupService } from './linkgroup.service';
-import { CreateLinkGroupDto } from './linkgroup.type';
+import { CreateLinkGroupDto, UpdateLinkGroupDto } from './linkgroup.type';
 
 @Controller()
 export class LinkGroupController {
@@ -36,7 +36,7 @@ export class LinkGroupController {
   async update(
     @Authorization() userId: string,
     @Param('id') id: string,
-    @Body() dto: CreateLinkGroupDto
+    @Body() dto: UpdateLinkGroupDto
   ) {
     const result = await this.linkGroupService.update(userId, id, dto);
     return result;

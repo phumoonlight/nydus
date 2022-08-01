@@ -45,6 +45,14 @@ export class LinkService {
     return result;
   }
 
+  async ungroup(userId: string, groupId: string) {
+    const result = await this.linkModel.updateMany(
+      { uid: userId, gid: groupId },
+      { gid: '' }
+    );
+    return result;
+  }
+
   async delete(id: string, userId: string) {
     const result = await this.linkModel.deleteOne({
       _id: id,
