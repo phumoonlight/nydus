@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { ErrRecordNotFound } from '@/apps/vurl/common/error';
 import { LinkReqBody } from './link.type';
 import { Link, LinkDocument } from './link.schema';
 
@@ -11,7 +12,14 @@ export class LinkService {
     private linkModel: Model<LinkDocument>
   ) {}
 
-  async getList(userId: string) {
+  async getList(userId: string, groupId = '') {
+    if (groupId) {
+      const result = await this.linkModel.find({
+        uid: userId,
+        gid: groupId,
+      });
+      return result;
+    }
     const result = await this.linkModel.find({ uid: userId });
     return result;
   }
@@ -29,19 +37,30 @@ export class LinkService {
   }
 
   async update(id: string, userId: string, payload: LinkReqBody) {
-    const result = await this.linkModel.updateOne(
-      {
-        _id: id,
-        uid: userId,
-      },
-      {
-        gid: payload.gid,
-        name: payload.name,
-        url: payload.url,
-        timg: payload.timg,
-        posn: payload.posn,
-      }
-    );
+    const existLink = await this.linkModel.findOne({
+      _id: id,
+      uid: userId,
+    });
+    if (!existLink) throw new ErrRecordNotFound();
+    if (typeof payload.gid !== 'undefined') existLink.gid = payload.gid;
+    if (typeof payload.name !== 'undefined') existLink.name = payload.name;
+    if (typeof payload.url !== 'undefined') existLink.url = payload.url;
+    if (typeof payload.timg !== 'undefined') existLink.timg = payload.timg;
+    if (typeof payload.posn !== 'undefined') existLink.posn = payload.posn;
+    const result = await existLink.save();
+    // const result = await this.linkModel.updateOne(
+    //   {
+    //     _id: id,
+    //     uid: userId,
+    //   },
+    //   {
+    //     gid: payload.gid,
+    //     name: payload.name,
+    //     url: payload.url,
+    //     timg: payload.timg,
+    //     posn: payload.posn,
+    //   }
+    // );
     return result;
   }
 

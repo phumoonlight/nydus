@@ -13,4 +13,5 @@ export const ENV = {
   vurlFirebaseStorageBucketName:
     process.env.APP_VURL_FIREBASE_STORAGE_BUCKET_NAME,
   vurlAdminAuthKey: process.env.APP_VURL_ADMIN_AUTH_KEY || 'admin',
+  vurlMockUserId: process.env.APP_VURL_MOCK_USER_ID || '',
 };

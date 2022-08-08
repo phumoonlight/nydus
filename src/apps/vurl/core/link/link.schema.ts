@@ -1,10 +1,15 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { SCHEMA_TIMESTAMP_CONFIG } from '@/common/schema';
+import {
+  MONGO_SCHEMA_TO_JSON_OPTIONS,
+  MONGO_SCHEMA_TIMESTAMP_CONFIG,
+} from '@/apps/vurl/vurl.config';
 
 @Schema({
-  timestamps: SCHEMA_TIMESTAMP_CONFIG,
   collection: 'link_items',
+  optimisticConcurrency: true,
+  timestamps: MONGO_SCHEMA_TIMESTAMP_CONFIG,
+  toJSON: MONGO_SCHEMA_TO_JSON_OPTIONS,
 })
 export class Link {
   @Prop({ index: true, required: true })

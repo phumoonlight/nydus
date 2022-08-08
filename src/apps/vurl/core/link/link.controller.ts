@@ -6,9 +6,10 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { LinkService } from './link.service';
-import { Authorization } from '../../vurl.auth';
+import { Auth } from '../../vurl.auth';
 import { Link } from './link.schema';
 import { LinkReqBody } from './link.type';
 
@@ -17,35 +18,31 @@ export class LinkController {
   constructor(private linkService: LinkService) {}
 
   @Get()
-  async getList(@Authorization() userId: string) {
-    const value = await this.linkService.getList(userId);
+  async getList(@Auth() userId: string, @Query('group') groupId: string) {
+    const value = await this.linkService.getList(userId, groupId);
     return {
       value,
     };
   }
 
   @Post()
-  async create(@Authorization() userId: string, @Body() body: LinkReqBody) {
+  async create(@Auth() userId: string, @Body() body: LinkReqBody) {
     const result = await this.linkService.create(userId, body);
-    return {
-      result,
-    };
+    return result;
   }
 
   @Patch(':id')
   async updateLink(
-    @Authorization() userId: string,
+    @Auth() userId: string,
     @Param('id') id: string,
     @Body() payload: Link
   ) {
     const result = await this.linkService.update(id, userId, payload);
-    return {
-      result,
-    };
+    return result;
   }
 
   @Delete(':id')
-  async deleteLink(@Authorization() userId: string, @Param('id') id: string) {
+  async deleteLink(@Auth() userId: string, @Param('id') id: string) {
     const result = this.linkService.delete(id, userId);
     return {
       result,

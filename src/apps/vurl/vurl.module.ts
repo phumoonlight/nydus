@@ -3,7 +3,7 @@ import { RouterModule } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ENV } from '@/app.env';
 import { routes } from './vurl.routes';
-import { vurlConfig } from './vurl.config';
+import { MONGO_MODULE_OPTIONS } from './vurl.config';
 import { FirebaseModule } from './core/firebase/firebase.module';
 import { ImageModule } from './core/image/image.module';
 import { LinkModule } from './core/link/link.module';
@@ -12,7 +12,7 @@ import { AdminModule } from './core/admin/admin.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(ENV.vurlMongoConn, vurlConfig.mongooseOptions),
+    MongooseModule.forRoot(ENV.vurlMongoConn, MONGO_MODULE_OPTIONS),
     RouterModule.register(routes),
     FirebaseModule,
     ImageModule,
