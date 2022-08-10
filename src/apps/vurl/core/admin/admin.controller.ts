@@ -7,7 +7,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ERR_HTTP_UNAUTHORIZED } from '@/common/error';
+import { ErrUnauthorized } from '@/common/error';
 import { ImageService } from '../image/image.service';
 import { AdminGuard } from './admin.guard';
 import { ENV } from '@/app.env';
@@ -17,7 +17,7 @@ import { createToken } from '@/common/jwt';
 export class AdminController {
   @Post('login')
   async login(@Body('key') key: string) {
-    if (key !== ENV.vurlAdminAuthKey) throw ERR_HTTP_UNAUTHORIZED;
+    if (key !== ENV.vurlAdminAuthKey) throw new ErrUnauthorized();
     const token = createToken({ key });
     return {
       token,

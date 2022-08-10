@@ -5,7 +5,7 @@ import { firebaseAuth, firebaseBucket } from './firebase.app';
 @Injectable()
 export class FirebaseService {
   uploadImageFile(file: Express.Multer.File, dest: string): Promise<string> {
-    return new Promise<string>((resolve) => {
+    return new Promise<string>((resolve, reject) => {
       if (!file) return resolve('');
       if (!file.mimetype.startsWith('image/')) resolve('');
       const bucketName = firebaseBucket.name;
@@ -13,7 +13,7 @@ export class FirebaseService {
       const blobStream = blob.createWriteStream({ resumable: false });
       blobStream.on('error', (error) => {
         console.error(error);
-        resolve('');
+        reject(error);
       });
       blobStream.on('finish', () => {
         const encodedDest = encodeURIComponent(dest);

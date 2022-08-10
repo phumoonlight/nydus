@@ -2,8 +2,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   UploadedFile,
@@ -11,24 +9,14 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageService } from './image.service';
-import { Authorization } from '@/apps/vurl/vurl.auth';
-
-const ErrUploadImageFailed = new HttpException(
-  'upload_image_failed',
-  HttpStatus.INTERNAL_SERVER_ERROR
-);
-
-const ErrDeleteImageNotFound = new HttpException(
-  'image_not_found',
-  HttpStatus.UNPROCESSABLE_ENTITY
-);
+import { Auth } from '@/apps/vurl/vurl.auth';
 
 @Controller()
 export class ImageController {
   constructor(private imageService: ImageService) {}
 
   @Get()
-  async getList(@Authorization() userId: string) {
+  async getList(@Auth() userId: string) {
     const list = await this.imageService.getList(userId);
     return {
       value: list,
@@ -39,10 +27,9 @@ export class ImageController {
   @UseInterceptors(FileInterceptor('file'))
   async upload(
     @UploadedFile() file: Express.Multer.File,
-    @Authorization() userId: string
+    @Auth() userId: string
   ) {
     const resultUrl = await this.imageService.upload(file, userId);
-    if (!resultUrl) throw ErrUploadImageFailed;
     return {
       value: resultUrl,
     };
@@ -60,19 +47,14 @@ export class ImageController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadShared(@UploadedFile() file: Express.Multer.File) {
     const resultUrl = await this.imageService.upload(file, '');
-    if (!resultUrl) throw ErrUploadImageFailed;
     return {
       value: resultUrl,
     };
   }
 
   @Delete(':id')
-  async delete(@Authorization() userId: string, @Param('id') imageId: string) {
+  async delete(@Auth() userId: string, @Param('id') imageId: string) {
     const result = await this.imageService.delete(imageId, userId);
-    if (!result) throw ErrDeleteImageNotFound;
-    return {
-      message: 'success',
-      result,
-    };
+    return result;
   }
 }

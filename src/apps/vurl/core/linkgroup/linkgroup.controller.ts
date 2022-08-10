@@ -7,7 +7,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { Authorization } from '../../vurl.auth';
+import { Auth } from '../../vurl.auth';
 import { LinkGroupService } from './linkgroup.service';
 import { CreateLinkGroupDto, UpdateLinkGroupDto } from './linkgroup.type';
 
@@ -16,7 +16,7 @@ export class LinkGroupController {
   constructor(private linkGroupService: LinkGroupService) {}
 
   @Get()
-  async getList(@Authorization() userId: string) {
+  async getList(@Auth() userId: string) {
     const value = await this.linkGroupService.getList(userId);
     return {
       value,
@@ -24,17 +24,14 @@ export class LinkGroupController {
   }
 
   @Post()
-  async create(
-    @Authorization() userId: string,
-    @Body() dto: CreateLinkGroupDto
-  ) {
+  async create(@Auth() userId: string, @Body() dto: CreateLinkGroupDto) {
     const result = await this.linkGroupService.create(userId, dto);
     return result;
   }
 
   @Patch(':id')
   async update(
-    @Authorization() userId: string,
+    @Auth() userId: string,
     @Param('id') id: string,
     @Body() dto: UpdateLinkGroupDto
   ) {
@@ -43,7 +40,7 @@ export class LinkGroupController {
   }
 
   @Delete(':id')
-  async delete(@Authorization() userId: string, @Param('id') id: string) {
+  async delete(@Auth() userId: string, @Param('id') id: string) {
     const result = await this.linkGroupService.delete(userId, id);
     return result;
   }

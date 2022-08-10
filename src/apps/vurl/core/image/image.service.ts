@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UploadedImage, UploadedImageDocument } from './image.schema';
 import { FirebaseService } from '../firebase/firebase.service';
+import { ErrRecordNotFound } from '@/common/error';
 
 @Injectable()
 export class ImageService {
@@ -29,19 +30,17 @@ export class ImageService {
   async upload(file: Express.Multer.File, userId: string): Promise<string> {
     const { filename, path } = this.processFile(userId, file);
     const resultUrl = await this.firebaseService.uploadImageFile(file, path);
-    if (resultUrl) {
-      await this.imageModel.create({
-        uid: userId,
-        url: resultUrl,
-        fname: filename,
-      });
-    }
+    await this.imageModel.create({
+      uid: userId,
+      url: resultUrl,
+      fname: filename,
+    });
     return resultUrl;
   }
 
   async delete(imageId: string, userId: string) {
     const img = await this.imageModel.findById(imageId);
-    if (!img) return null;
+    if (!img) throw new ErrRecordNotFound();
     const filename = img.fname;
     const path = userId
       ? `uploadimgs/owned/${userId}/${filename}`
