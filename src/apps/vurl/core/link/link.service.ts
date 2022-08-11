@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ErrRecordNotFound } from '@/common/error';
-import { LinkReqBody } from './link.type';
+import { ErrAccessDenied, ErrRecordNotFound } from '@/common/error';
 import { Link, LinkDocument } from './link.schema';
+import { CreateLinkDto, UpdateLinkDto } from './link.type';
 
 @Injectable()
 export class LinkService {
@@ -24,59 +24,35 @@ export class LinkService {
     return result;
   }
 
-  async create(userId: string, payload: LinkReqBody) {
+  async create(userId: string, dto: CreateLinkDto) {
     const result = await this.linkModel.create({
       uid: userId,
-      gid: payload.gid,
-      name: payload.name,
-      url: payload.url,
-      timg: payload.timg,
-      posn: payload.posn,
+      gid: dto.gid,
+      name: dto.name,
+      url: dto.url,
+      timg: dto.timg,
+      posn: dto.posn,
     });
     return result;
   }
 
-  async update(id: string, userId: string, payload: LinkReqBody) {
-    const existLink = await this.linkModel.findOne({
-      _id: id,
-      uid: userId,
-    });
-    if (!existLink) throw new ErrRecordNotFound();
-    if (typeof payload.gid !== 'undefined') existLink.gid = payload.gid;
-    if (typeof payload.name !== 'undefined') existLink.name = payload.name;
-    if (typeof payload.url !== 'undefined') existLink.url = payload.url;
-    if (typeof payload.timg !== 'undefined') existLink.timg = payload.timg;
-    if (typeof payload.posn !== 'undefined') existLink.posn = payload.posn;
-    const result = await existLink.save();
-    // const result = await this.linkModel.updateOne(
-    //   {
-    //     _id: id,
-    //     uid: userId,
-    //   },
-    //   {
-    //     gid: payload.gid,
-    //     name: payload.name,
-    //     url: payload.url,
-    //     timg: payload.timg,
-    //     posn: payload.posn,
-    //   }
-    // );
+  async update(userId: string, id: string, dto: UpdateLinkDto) {
+    const doc = await this.linkModel.findById(id);
+    if (!doc) throw new ErrRecordNotFound();
+    if (doc.uid !== userId) throw new ErrAccessDenied();
+    if (typeof dto.gid !== 'undefined') doc.gid = dto.gid;
+    if (typeof dto.name !== 'undefined') doc.name = dto.name;
+    if (typeof dto.url !== 'undefined') doc.url = dto.url;
+    if (typeof dto.timg !== 'undefined') doc.timg = dto.timg;
+    if (typeof dto.posn !== 'undefined') doc.posn = dto.posn;
+    const result = await doc.save();
     return result;
   }
 
-  async ungroup(userId: string, groupId: string) {
-    const result = await this.linkModel.updateMany(
-      { uid: userId, gid: groupId },
-      { gid: '' }
-    );
-    return result;
-  }
-
-  async delete(id: string, userId: string) {
-    const result = await this.linkModel.deleteOne({
-      _id: id,
-      uid: userId,
-    });
-    return result;
+  async delete(userId: string, id: string) {
+    const doc = await this.linkModel.findById(id);
+    if (!doc) throw new ErrRecordNotFound();
+    if (doc.uid !== userId) throw new ErrAccessDenied();
+    await doc.remove();
   }
 }

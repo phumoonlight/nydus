@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Auth } from '../../vurl.auth';
 import { LinkGroupService } from './linkgroup.service';
@@ -16,11 +17,16 @@ export class LinkGroupController {
   constructor(private linkGroupService: LinkGroupService) {}
 
   @Get()
-  async getList(@Auth() userId: string) {
-    const value = await this.linkGroupService.getList(userId);
-    return {
-      value,
+  async getList(@Auth() userId: string, @Query('type') type: string) {
+    const body = {
+      value: [],
     };
+    if (type === 'public') {
+      body.value = await this.linkGroupService.getPublicList();
+    } else {
+      body.value = await this.linkGroupService.getList(userId);
+    }
+    return body;
   }
 
   @Post()
@@ -41,7 +47,6 @@ export class LinkGroupController {
 
   @Delete(':id')
   async delete(@Auth() userId: string, @Param('id') id: string) {
-    const result = await this.linkGroupService.delete(userId, id);
-    return result;
+    await this.linkGroupService.delete(userId, id);
   }
 }

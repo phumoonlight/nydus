@@ -12,6 +12,12 @@ export class ErrRecordNotFound extends HttpException {
   }
 }
 
+export class ErrAccessDenied extends HttpException {
+  constructor(message = 'Access denied') {
+    super(message, HttpStatus.FORBIDDEN);
+  }
+}
+
 export class ErrUnauthorized extends HttpException {
   constructor(message = 'Unauthorized') {
     super(message, HttpStatus.UNAUTHORIZED);
