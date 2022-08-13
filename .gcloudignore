@@ -9,6 +9,7 @@
 /node_modules/
 /src/
 /test/
+/cert/service-account.example.json
 
 .gcloudignore
 .git
