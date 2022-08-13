@@ -42,8 +42,8 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
-          name: Build project
-          command: npm run build
+          name: 'Build project'
+          command: 'npm run build'
       - run:
           name: 'Setup file environment'
           command: 'echo ${F_ENV} > ${HOME}/app/.env'
