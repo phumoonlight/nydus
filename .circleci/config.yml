@@ -61,4 +61,4 @@ jobs:
           command: gcloud config set project ${GOOGLE_PROJECT_ID}
       - run:
           name: Deploy project
-          command: npm run deploy
+          command: gcloud app deploy
