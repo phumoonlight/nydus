@@ -7,6 +7,7 @@ orbs:
   # Orbs reduce the amount of configuration required for common tasks.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
   node: circleci/node@4.7
+  gcp-cli: circleci/gcp-cli@2.4.1
 
 workflows:
   # Below is the definition of your workflow.
@@ -39,6 +40,7 @@ jobs:
       - checkout
       # Next, the node orb's install-packages step will install the dependencies from a package.json.
       # The orb install-packages step will also automatically cache them for faster future runs.
+
       - node/install-packages:
           pkg-manager: npm
       - run:
@@ -50,6 +52,7 @@ jobs:
       - run:
           name: 'Setup mongo cert'
           command: 'echo ${VURL_MONGO_CERT} > ${HOME}/app/cert/vurl.mongo.pem.json'
+      - gcp-cli/install_and_initialize_cli
       - run:
           name: 'Setup google cloud service key'
           command: 'echo ${GCLOUD_SERVICE_KEY} > ${HOME}/gcloud-service-key.json'
