@@ -49,17 +49,24 @@ jobs:
           command: 'npm run build'
       - run:
           name: 'Setup file environment'
-          command: 'echo ${F_ENV} > ${HOME}/app/.env'
+          command: 'echo ${DOT_ENV} | base64 --decode > ${HOME}/app/.env'
       - run:
-          name: 'Setup mongo cert'
-          command: 'echo ${VURL_MONGO_CERT} > ${HOME}/app/cert/vurl.mongo.pem.json'
+          name: 'Setup vurl cert - mongo '
+          command: 'echo ${VURL_CERT_MONGO} | base64 --decode > ${HOME}/app/cert/vurl.mongo.pem.json'
+      - run:
+          name: 'Setup vurl cert - service account'
+          command: 'echo ${VURL_CERT_SA} | base64 --decode > ${HOME}/app/cert/vurl.sa.json'
       - persist_to_workspace:
           root: .
           paths:
             - dist
             - cert
+            - .gcloudignore
             - .env
             - app.yaml
+            - package.json
+            - package-lock.json
+
   deploy:
     docker:
       - image: google/cloud-sdk
