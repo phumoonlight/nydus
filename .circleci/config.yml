@@ -47,7 +47,7 @@ jobs:
       - run:
           name: 'Setup file environment'
           command: 'echo ${F_ENV} > ${HOME}/app/.env'
-       - run:
+      - run:
           name: 'Setup mongo cert'
           command: 'echo ${VURL_MONGO_CERT} > ${HOME}/app/cert/vurl.mongo.pem.json'
       - run:
