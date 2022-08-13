@@ -5,15 +5,20 @@
 # For more information, run:
 # $ gcloud topic gcloudignore
 
-node_modules/
+/.circleci/
+/node_modules/
 /src/
+/test/
 
 .gcloudignore
 .git
 .gitignore
 .env.example
+.prettierrc
+
 LICENSE
 README.md
+
+nest-cli.json
+tsconfig.build.json
 tsconfig.json
-/service-account.json
-/service-account.json.example
