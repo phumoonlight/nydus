@@ -45,20 +45,20 @@ jobs:
           name: Build project
           command: npm run build
       - run:
-          name: Setup file environment
-          command: echo ${F_ENV} > ${HOME}/app/.env
+          name: 'Setup file environment'
+          command: 'echo ${F_ENV} > ${HOME}/app/.env'
        - run:
-          name: Setup mongo cert
-          command: echo ${VURL_MONGO_CERT} > ${HOME}/app/cert/vurl.mongo.pem.json
+          name: 'Setup mongo cert'
+          command: 'echo ${VURL_MONGO_CERT} > ${HOME}/app/cert/vurl.mongo.pem.json'
       - run:
-          name: Setup google cloud service key
-          command: echo ${GCLOUD_SERVICE_KEY} > ${HOME}/gcloud-service-key.json
+          name: 'Setup google cloud service key'
+          command: 'echo ${GCLOUD_SERVICE_KEY} > ${HOME}/gcloud-service-key.json'
       - run:
-          name: Setup google cloud sdk - auth
-          command: gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+          name: 'Setup google cloud sdk - auth'
+          command: 'gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json'
       - run:
-          name: Setup google cloud sdk - project
-          command: gcloud config set project ${GOOGLE_PROJECT_ID}
+          name: 'Setup google cloud sdk - project'
+          command: 'gcloud config set project ${GOOGLE_PROJECT_ID}'
       - run:
-          name: Deploy project
-          command: gcloud app deploy
+          name: 'Deploy project'
+          command: 'gcloud app deploy'
