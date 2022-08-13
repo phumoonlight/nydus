@@ -52,7 +52,7 @@ jobs:
           command: 'echo ${DOT_ENV} | base64 --decode > ${HOME}/app/.env'
       - run:
           name: 'Setup vurl cert - mongo '
-          command: 'echo ${VURL_CERT_MONGO} | base64 --decode > ${HOME}/app/cert/vurl.mongo.pem.json'
+          command: 'echo ${VURL_CERT_MONGO} | base64 --decode > ${HOME}/app/cert/vurl.mongo.pem'
       - run:
           name: 'Setup vurl cert - service account'
           command: 'echo ${VURL_CERT_SA} | base64 --decode > ${HOME}/app/cert/vurl.sa.json'
@@ -66,7 +66,6 @@ jobs:
             - app.yaml
             - package.json
             - package-lock.json
-
   deploy:
     docker:
       - image: google/cloud-sdk
