@@ -17,9 +17,10 @@ workflows:
     jobs:
       - setup:
           filters:
+            tags:
+              only: /^v.*/
             branches:
-              only:
-                - master
+              ignore: /.*/
       - deploy:
           requires:
             - setup
@@ -45,6 +46,9 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: 'Setup version'
+          command: 'echo ${CIRCLE_TAG} > version.txt'
+      - run:
           name: 'Setup .env'
           command: 'echo ${DOT_ENV} | base64 --decode > ${HOME}/app/.env'
       - run:
@@ -66,6 +70,7 @@ jobs:
             - app.yaml
             - package.json
             - package-lock.json
+            - version.txt
   deploy:
     docker:
       - image: google/cloud-sdk

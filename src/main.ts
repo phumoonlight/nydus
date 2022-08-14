@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ENV } from './app.env';
+import { ENV, getVersion } from './app.env';
 import { AppModule } from './app.module';
 
 const bootstrap = async () => {
@@ -7,6 +7,7 @@ const bootstrap = async () => {
   await app.listen(ENV.port);
   console.log('[app] env:', ENV.nodeEnv);
   console.log('[app] port:', ENV.port);
+  console.log('[app] version:', await getVersion());
 };
 
 bootstrap();

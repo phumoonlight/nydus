@@ -1,3 +1,4 @@
+/version.txt
 .env
 /cert/*
 !/cert/*.example.json
