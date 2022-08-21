@@ -13,6 +13,10 @@ export class LinkService {
   ) {}
 
   async getList(userId: string, groupId = '') {
+    if (groupId === 'all') {
+      const result = await this.linkModel.find({ uid: userId });
+      return result;
+    }
     if (groupId) {
       const result = await this.linkModel.find({
         uid: userId,
@@ -20,7 +24,7 @@ export class LinkService {
       });
       return result;
     }
-    const result = await this.linkModel.find({ uid: userId });
+    const result = await this.linkModel.find({ uid: userId, gid: '' });
     return result;
   }
 
